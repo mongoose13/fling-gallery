@@ -181,12 +181,15 @@ class GalleryRenderObject extends RenderBox
     return GalleryLayout(
       rows: rows,
       width: maxWidth,
-      height: math.min(
-          constraints.maxHeight,
-          rows.isNotEmpty
-              ? rows.fold(0.0, (height, row) => height + row.height) +
-                  (rows.length - 1) * verticalSpacing
-              : 0.0),
+      height: math.max(
+        math.min(
+            constraints.maxHeight,
+            rows.isNotEmpty
+                ? rows.fold(0.0, (height, row) => height + row.height) +
+                    (rows.length - 1) * verticalSpacing
+                : 0.0),
+        constraints.minHeight,
+      ),
     );
   }
 

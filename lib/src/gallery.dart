@@ -13,7 +13,7 @@ class Gallery extends MultiChildRenderObjectWidget {
     this.horizontalSpacing = 4.0,
     this.verticalSpacing = 4.0,
     this.maxScaleRatio = 2.0,
-    super.children,
+    super.children = const [],
   });
 
   @override
