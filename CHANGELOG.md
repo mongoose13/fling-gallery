@@ -7,6 +7,11 @@ A Flutter widget that lays out its children in tight rows.
 
 - Ability to force fill the bottom row
 
+### Fixed
+
+- Incorrect calculations on row length in some instances
+- Layout bounds during intermediate layout steps causing errors
+
 ## [0.0.1]
 
 ### Added
@@ -18,4 +23,5 @@ A Flutter widget that lays out its children in tight rows.
 - CircleCI config
 
 [Unreleased]: https://bitbucket.org/mongoose13/fling-gallery/commits/
-[0.0.1]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/v0.0.1
+[0.0.1]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/0.0.1
+[0.0.1]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/0.0.2

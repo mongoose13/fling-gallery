@@ -20,8 +20,8 @@ class GalleryLayout {
 
   GalleryLayout({
     this.rows = const [],
-    this.width = double.infinity,
-    this.height = double.infinity,
+    this.width = 0.0,
+    this.height = 0.0,
   });
 
   Size get size => Size(width, height);

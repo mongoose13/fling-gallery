@@ -123,11 +123,11 @@ class GalleryRenderObject extends RenderBox
     return defaultComputeDistanceToHighestActualBaseline(baseline);
   }
 
-  @override
+  /*@override
   double? computeDryBaseline(
       covariant BoxConstraints constraints, TextBaseline baseline) {
     return null;
-  }
+  }*/
 
   @override
   @protected
@@ -148,8 +148,8 @@ class GalleryRenderObject extends RenderBox
         final child = slot.child;
         child.layout(
             BoxConstraints(
-              maxWidth: slotWidth,
-              maxHeight: rowHeight,
+              maxWidth: slotWidth.isNaN ? 0.0 : slotWidth,
+              maxHeight: rowHeight.isFinite ? rowHeight : 0.0,
             ),
             parentUsesSize: true);
         (child.parentData! as GalleryParentData).offset = offset;
@@ -249,11 +249,7 @@ class GalleryRenderObject extends RenderBox
         ));
       }
     }
-    return GalleryLayout(
-      rows: rows,
-      width: maxRowWidth,
-      height: math.max(
-        math.min(
+    final totalHeight = math.min(
             constraints.maxHeight,
             rows.isNotEmpty
                 ? rows.fold(
@@ -261,9 +257,11 @@ class GalleryRenderObject extends RenderBox
                         (height, row) =>
                             height + row.ratio * preferredRowHeight) +
                     (rows.length - 1) * verticalSpacing
-                : 0.0),
-        constraints.minHeight,
-      ),
+            : 0.0);
+    return GalleryLayout(
+      rows: rows,
+      width: maxRowWidth.isNaN ? double.infinity : maxRowWidth,
+      height: totalHeight.isFinite ? totalHeight : 0.0,
     );
   }
 }
