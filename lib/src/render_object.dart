@@ -190,8 +190,9 @@ class GalleryRenderObject extends RenderBox
       currentRowWidth += adjustedChildWidth;
       if (currentRowWidth > adjustedMaxRowWidth) {
         ratioWithLatestChild = adjustedMaxRowWidth / currentRowWidth;
-        final deviationWithLatestChild = ratioWithLatestChild - 1.0;
-        final deviationWithoutLatestChild = 1.0 - ratioWithoutLatestChild;
+        final deviationWithLatestChild = (ratioWithLatestChild - 1.0).abs();
+        final deviationWithoutLatestChild =
+            (ratioWithoutLatestChild - 1.0).abs();
         double ratio;
         if (deviationWithoutLatestChild > deviationWithLatestChild) {
           ratio = ratioWithLatestChild;
