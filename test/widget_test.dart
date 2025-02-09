@@ -14,8 +14,10 @@ void main() {
   testWidgets('Empty gallery lays itself out without errors',
       (WidgetTester tester) async {
     // given
-    final gallery = Gallery(
-      preferredRowHeight: 200.0,
+    final gallery = Center(
+      child: Gallery(
+        preferredRowHeight: 200.0,
+      ),
     );
 
     // when
@@ -24,14 +26,16 @@ void main() {
   testWidgets('Single item gallery lays itself out without errors',
       (WidgetTester tester) async {
     // given
-    final gallery = Gallery(
-      preferredRowHeight: 200.0,
-      children: <Widget>[
-        SizedBox(
-          width: 10.0,
-          height: 10.0,
-        ),
-      ],
+    final gallery = Center(
+      child: Gallery(
+        preferredRowHeight: 200.0,
+        children: <Widget>[
+          SizedBox(
+            width: 10.0,
+            height: 10.0,
+          ),
+        ],
+      ),
     );
 
     // when
