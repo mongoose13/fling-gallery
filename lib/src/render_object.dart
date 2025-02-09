@@ -37,7 +37,7 @@ class GalleryRenderObject extends RenderBox
     markNeedsLayout();
   }
 
-  /// The spacing between items in a row.
+  /// The spacing between rows.
   double get verticalSpacing => _horizontalSpacing;
   double _verticalSpacing;
   set verticalSpacing(double value) {
@@ -81,28 +81,18 @@ class GalleryRenderObject extends RenderBox
 
   @override
   double computeMinIntrinsicWidth(double height) {
-    double width = 0.0;
-    RenderBox? child = firstChild;
-    while (child != null) {
-      final childSize = child
-          .getDryLayout(BoxConstraints.tightFor(height: preferredRowHeight));
-      width = math.max(width, childSize.width);
-      child = childAfter(child);
-    }
-    return width;
+    return _childSizes().fold(
+      0.0,
+      (previous, child) => math.max(previous, child.width),
+    );
   }
 
   @override
   double computeMaxIntrinsicWidth(double height) {
-    double width = 0.0;
-    RenderBox? child = firstChild;
-    while (child != null) {
-      final childSize = child
-          .getDryLayout(BoxConstraints.tightFor(height: preferredRowHeight));
-      width += childSize.width;
-      child = childAfter(child);
-    }
-    return width;
+    return _childSizes().fold(
+      0.0,
+      (previous, child) => previous + child.width,
+    );
   }
 
   @override
@@ -118,79 +108,6 @@ class GalleryRenderObject extends RenderBox
   @override
   double? computeDistanceToActualBaseline(TextBaseline baseline) {
     return defaultComputeDistanceToHighestActualBaseline(baseline);
-  }
-
-  /// Calculate the finished layout.
-  GalleryLayout _computeRows(BoxConstraints constraints) {
-    final maxWidth = constraints.maxWidth;
-    RenderBox? child = firstChild;
-    double totalWidth = 0.0;
-    double previousRatio = double.infinity;
-    double newRatio = double.infinity;
-    List<RenderBox> children = [];
-    List<GalleryRow> rows = [];
-
-    while (child != null) {
-      final spacingModifier = children.length * horizontalSpacing;
-      final modifiedWidth = maxWidth - spacingModifier;
-      final childSize = child
-          .getDryLayout(BoxConstraints.tightFor(height: preferredRowHeight));
-      totalWidth += childSize.width;
-      if (totalWidth > modifiedWidth) {
-        newRatio = modifiedWidth / totalWidth;
-        double height = preferredRowHeight;
-        if ((1.0 - previousRatio) > (newRatio - 1.0)) {
-          // keep the new child
-          children.add(child);
-          child = childAfter(child);
-          height *= newRatio;
-        } else {
-          height *= previousRatio;
-        }
-        rows.add(
-          (
-            children: children,
-            height: height,
-          ),
-        );
-        // reset
-        totalWidth = 0.0;
-        previousRatio = double.infinity;
-        children = [];
-      } else {
-        children.add(child);
-        child = childAfter(child);
-        previousRatio = modifiedWidth / totalWidth;
-      }
-    }
-    if (children.isNotEmpty) {
-      // add the last row
-      if (newRatio < maxScaleRatio) {
-        // Scaling up the last row is not so egregious, so do it
-        rows.add(
-          (
-            children: children,
-            height: preferredRowHeight * newRatio,
-          ),
-        );
-      } else {
-        // Scaling up the last row makes it too big, default to left aligned
-        rows.add((children: children, height: preferredRowHeight));
-      }
-    }
-    return GalleryLayout(
-      rows: rows,
-      width: maxWidth,
-      height: math.max(
-        math.min(
-            constraints.maxHeight,
-            rows.isNotEmpty
-                ? rows.fold(0.0, (height, row) => height + row.height) +
-                    (rows.length - 1) * verticalSpacing
-                : 0.0),
-        constraints.minHeight,
-      ),
-    );
   }
 
   @override
@@ -212,18 +129,20 @@ class GalleryRenderObject extends RenderBox
 
     Offset offset = const Offset(0.0, 0.0);
     for (var row in layout.rows) {
-      for (var child in row.children) {
-        final childWidth = child.getMaxIntrinsicWidth(row.height);
+      final rowHeight = row.ratio * preferredRowHeight;
+      for (var slot in row.slots) {
+        final slotWidth = slot.width * row.ratio;
+        final child = slot.child;
         child.layout(
             BoxConstraints(
-              maxWidth: childWidth,
-              maxHeight: row.height,
+              maxWidth: slotWidth,
+              maxHeight: rowHeight,
             ),
             parentUsesSize: true);
         (child.parentData! as GalleryParentData).offset = offset;
-        offset = Offset(offset.dx + childWidth + horizontalSpacing, offset.dy);
+        offset = Offset(offset.dx + slotWidth + horizontalSpacing, offset.dy);
       }
-      offset = Offset(0.0, offset.dy + row.height + verticalSpacing);
+      offset = Offset(0.0, offset.dy + rowHeight + verticalSpacing);
     }
   }
 
@@ -235,5 +154,102 @@ class GalleryRenderObject extends RenderBox
   @override
   void paint(PaintingContext context, Offset offset) {
     defaultPaint(context, offset);
+  }
+
+  /// Returns an iterator over the sizes of all children, in order.
+  Iterable<Size> _childSizes() sync* {
+    RenderBox? child = firstChild;
+    while (child != null) {
+      final childSize = child
+          .getDryLayout(BoxConstraints.tightFor(height: preferredRowHeight));
+      yield childSize;
+      child = childAfter(child);
+    }
+  }
+
+  /// Calculates the finished layout given parent constraints.
+  GalleryLayout _computeRows(BoxConstraints constraints) {
+    final preferredConstraints =
+        BoxConstraints.tightFor(height: preferredRowHeight);
+    final maxRowWidth = constraints.maxWidth;
+    RenderBox? child = firstChild;
+    double currentRowWidth = 0.0;
+    double ratioWithoutLatestChild = double.infinity;
+    double ratioWithLatestChild = double.infinity;
+    List<GallerySlot> slots = [];
+    List<GalleryRow> rows = [];
+
+    while (child != null) {
+      // The amount of space taken up by the spacing between items
+      final rowWidthSpacingModifier = slots.length * horizontalSpacing;
+      // The amount of space on the row that is useful for laying out children
+      final adjustedMaxRowWidth = maxRowWidth - rowWidthSpacingModifier;
+      // The current child's width, adjusted for the row's height constraints
+      final adjustedChildWidth = child.getDryLayout(preferredConstraints).width;
+
+      currentRowWidth += adjustedChildWidth;
+      if (currentRowWidth > adjustedMaxRowWidth) {
+        ratioWithLatestChild = adjustedMaxRowWidth / currentRowWidth;
+        final deviationWithLatestChild = ratioWithLatestChild - 1.0;
+        final deviationWithoutLatestChild = 1.0 - ratioWithoutLatestChild;
+        double ratio;
+        if (deviationWithoutLatestChild > deviationWithLatestChild) {
+          ratio = ratioWithLatestChild;
+          // keep the new child
+          slots.add((child: child, width: adjustedChildWidth));
+          child = childAfter(child);
+        } else {
+          ratio = ratioWithoutLatestChild;
+        }
+        rows.add(
+          (
+            slots: slots,
+            ratio: ratio,
+          ),
+        );
+        // reset
+        currentRowWidth = 0.0;
+        ratioWithoutLatestChild = double.infinity;
+        slots = [];
+      } else {
+        slots.add((child: child, width: adjustedChildWidth));
+        child = childAfter(child);
+        ratioWithoutLatestChild = adjustedMaxRowWidth / currentRowWidth;
+      }
+    }
+    if (slots.isNotEmpty) {
+      // add the last row
+      if (ratioWithLatestChild < maxScaleRatio) {
+        // Scaling up the last row is not so egregious, so do it
+        rows.add(
+          (
+            slots: slots,
+            ratio: ratioWithLatestChild,
+          ),
+        );
+      } else {
+        // Scaling up the last row makes it too big, so default to left aligned
+        rows.add((
+          slots: slots,
+          ratio: 1.0,
+        ));
+      }
+    }
+    return GalleryLayout(
+      rows: rows,
+      width: maxRowWidth,
+      height: math.max(
+        math.min(
+            constraints.maxHeight,
+            rows.isNotEmpty
+                ? rows.fold(
+                        0.0,
+                        (height, row) =>
+                            height + row.ratio * preferredRowHeight) +
+                    (rows.length - 1) * verticalSpacing
+                : 0.0),
+        constraints.minHeight,
+      ),
+    );
   }
 }
