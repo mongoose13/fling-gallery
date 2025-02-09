@@ -6,6 +6,7 @@ class Gallery extends MultiChildRenderObjectWidget {
   final double horizontalSpacing;
   final double verticalSpacing;
   final double maxScaleRatio;
+  final bool forceFill;
 
   const Gallery({
     super.key,
@@ -13,6 +14,7 @@ class Gallery extends MultiChildRenderObjectWidget {
     this.horizontalSpacing = 4.0,
     this.verticalSpacing = 4.0,
     this.maxScaleRatio = 2.0,
+    this.forceFill = false,
     super.children = const [],
   });
 
@@ -22,5 +24,6 @@ class Gallery extends MultiChildRenderObjectWidget {
         horizontalSpacing: horizontalSpacing,
         verticalSpacing: verticalSpacing,
         maxScaleRatio: maxScaleRatio,
+        forceFill: forceFill,
       );
 }

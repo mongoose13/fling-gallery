@@ -12,6 +12,8 @@ A Flutter widget that lays out its children into tight rows.
 
 This widget creates rows for its children not unlike a Wrap widget. However, unlike the Wrap widget, this widget tries to size its children so that they fit perfectly on each row.
 
+The current implementation uses a greedy algorithm and thus may not optimally arrange items. In particular, the last row may not have enough items to fill it completely.
+
 [Demo Page](https://fling-gallery-demo.web.app/)
 
 ![Example gallery with photos of Yellowstone](https://f000.backblazeb2.com/file/mongoose-website/fling-gallery/fling-gallery-snap.png)

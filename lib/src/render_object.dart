@@ -48,6 +48,17 @@ class GalleryRenderObject extends RenderBox
     markNeedsLayout();
   }
 
+  /// Whether the bottom row should be forced into a full row.
+  bool get forceFill => _forceFill;
+  bool _forceFill;
+  set forceFill(bool value) {
+    if (_forceFill == value) {
+      return;
+    }
+    _forceFill = value;
+    markNeedsLayout();
+  }
+
   /// The maximum ratio to use when scaling.
   double get maxScaleRatio => _maxScaleRatio;
   double _maxScaleRatio;
@@ -65,10 +76,12 @@ class GalleryRenderObject extends RenderBox
     required double horizontalSpacing,
     required double verticalSpacing,
     required double maxScaleRatio,
+    required bool forceFill,
   })  : _preferredRowHeight = preferredRowHeight,
         _horizontalSpacing = horizontalSpacing,
         _verticalSpacing = verticalSpacing,
-        _maxScaleRatio = maxScaleRatio {
+        _maxScaleRatio = maxScaleRatio,
+        _forceFill = forceFill {
     addAll(children);
   }
 
@@ -188,8 +201,8 @@ class GalleryRenderObject extends RenderBox
       final adjustedChildWidth = child.getDryLayout(preferredConstraints).width;
 
       currentRowWidth += adjustedChildWidth;
+      ratioWithLatestChild = adjustedMaxRowWidth / currentRowWidth;
       if (currentRowWidth > adjustedMaxRowWidth) {
-        ratioWithLatestChild = adjustedMaxRowWidth / currentRowWidth;
         final deviationWithLatestChild = (ratioWithLatestChild - 1.0).abs();
         final deviationWithoutLatestChild =
             (ratioWithoutLatestChild - 1.0).abs();
@@ -220,7 +233,7 @@ class GalleryRenderObject extends RenderBox
     }
     if (slots.isNotEmpty) {
       // add the last row
-      if (ratioWithLatestChild < maxScaleRatio) {
+      if (forceFill || ratioWithLatestChild < maxScaleRatio) {
         // Scaling up the last row is not so egregious, so do it
         rows.add(
           (
