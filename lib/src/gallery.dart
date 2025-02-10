@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 class Gallery extends MultiChildRenderObjectWidget {
   final double preferredRowHeight;
+  final int? maxRowItems;
   final double horizontalSpacing;
   final double verticalSpacing;
   final double maxScaleRatio;
@@ -11,6 +12,7 @@ class Gallery extends MultiChildRenderObjectWidget {
   const Gallery({
     super.key,
     required this.preferredRowHeight,
+    this.maxRowItems,
     this.horizontalSpacing = 4.0,
     this.verticalSpacing = 4.0,
     this.maxScaleRatio = 2.0,
@@ -21,6 +23,7 @@ class Gallery extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) => GalleryRenderObject(
         preferredRowHeight: preferredRowHeight,
+        maxRowItems: maxRowItems,
         horizontalSpacing: horizontalSpacing,
         verticalSpacing: verticalSpacing,
         maxScaleRatio: maxScaleRatio,

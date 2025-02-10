@@ -26,6 +26,22 @@ class GalleryRenderObject extends RenderBox
     markNeedsLayout();
   }
 
+  /// The maximum number of items per row.
+  ///
+  /// The widget will force additional items onto new rows, possibly increasing
+  /// the total number of rows. If this is null, there is no maximum, and only
+  /// the items' widths will restrict the items per row.
+  int? get maxRowItems => _maxRowItems;
+  bool get hasMaxRowItems => _maxRowItems != null;
+  int? _maxRowItems;
+  set maxRowItems(int? value) {
+    if (_maxRowItems == value) {
+      return;
+    }
+    _maxRowItems = value;
+    markNeedsLayout();
+  }
+
   /// The spacing between items in a row.
   double get horizontalSpacing => _horizontalSpacing;
   double _horizontalSpacing;
@@ -73,11 +89,13 @@ class GalleryRenderObject extends RenderBox
   GalleryRenderObject({
     List<RenderBox>? children,
     required double preferredRowHeight,
+    required int? maxRowItems,
     required double horizontalSpacing,
     required double verticalSpacing,
     required double maxScaleRatio,
     required bool forceFill,
   })  : _preferredRowHeight = preferredRowHeight,
+        _maxRowItems = maxRowItems,
         _horizontalSpacing = horizontalSpacing,
         _verticalSpacing = verticalSpacing,
         _maxScaleRatio = maxScaleRatio,
@@ -122,12 +140,6 @@ class GalleryRenderObject extends RenderBox
   double? computeDistanceToActualBaseline(TextBaseline baseline) {
     return defaultComputeDistanceToHighestActualBaseline(baseline);
   }
-
-  /*@override
-  double? computeDryBaseline(
-      covariant BoxConstraints constraints, TextBaseline baseline) {
-    return null;
-  }*/
 
   @override
   @protected
@@ -202,7 +214,18 @@ class GalleryRenderObject extends RenderBox
 
       currentRowWidth += adjustedChildWidth;
       ratioWithLatestChild = adjustedMaxRowWidth / currentRowWidth;
-      if (currentRowWidth > adjustedMaxRowWidth) {
+      if (hasMaxRowItems && maxRowItems! <= slots.length) {
+        rows.add(
+          (
+            slots: slots,
+            ratio: ratioWithoutLatestChild,
+          ),
+        );
+        // reset
+        currentRowWidth = 0.0;
+        ratioWithoutLatestChild = double.infinity;
+        slots = [];
+      } else if (currentRowWidth > adjustedMaxRowWidth) {
         final deviationWithLatestChild = (ratioWithLatestChild - 1.0).abs();
         final deviationWithoutLatestChild =
             (ratioWithoutLatestChild - 1.0).abs();
