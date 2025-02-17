@@ -1,0 +1,4 @@
+---
+engines:
+  markdownlint:
+    siblings_only: true

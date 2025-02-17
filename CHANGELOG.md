@@ -1,4 +1,5 @@
 # Change Log for fling\_gallery
+
 A Flutter widget that lays out its children in tight rows.
 
 ## [Unreleased]
