@@ -12,11 +12,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      # https://github.com/dart-lang/setup-dart/blob/main/README.md
-      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+      # https://github.com/marketplace/actions/flutter-action
+      - uses: subosito/flutter-action@v2
 
       - name: Install dependencies
-        run: dart pub get
+        run: flutter pub get
 
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
@@ -25,7 +25,7 @@ jobs:
         run: dart analyze --fatal-infos
 
       - name: Run tests
-        run: dart test
+        run: flutter test
 
       - name: Run pana
         run: dart pub global activate pana && ~/.pub-cache/bin/pana . --no-warning --exit-code-threshold 0
