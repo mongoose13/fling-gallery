@@ -8,6 +8,11 @@ A Flutter widget that lays out its children in tight rows.
 
 - Parameter for maximum child count per row
 
+### Fixed
+
+- Report actual dimensions to parent instead of max dimensions
+- Respect minimum and maximum sizes
+
 ## [0.1.0]
 
 ### Added

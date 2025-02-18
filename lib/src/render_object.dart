@@ -196,8 +196,10 @@ class GalleryRenderObject extends RenderBox
   GalleryLayout _computeRows(BoxConstraints constraints) {
     final preferredConstraints =
         BoxConstraints.tightFor(height: preferredRowHeight);
-    final maxRowWidth = constraints.maxWidth;
+    final maxRowWidth =
+        constraints.maxWidth.isNaN ? double.infinity : constraints.maxWidth;
     RenderBox? child = firstChild;
+    double totalWidth = 0.0;
     double currentRowWidth = 0.0;
     double ratioWithoutLatestChild = double.infinity;
     double ratioWithLatestChild = double.infinity;
@@ -222,6 +224,7 @@ class GalleryRenderObject extends RenderBox
           ),
         );
         // reset
+        totalWidth = math.max(totalWidth, maxRowWidth);
         currentRowWidth = 0.0;
         ratioWithoutLatestChild = double.infinity;
         slots = [];
@@ -245,6 +248,7 @@ class GalleryRenderObject extends RenderBox
           ),
         );
         // reset
+        totalWidth = math.max(totalWidth, maxRowWidth);
         currentRowWidth = 0.0;
         ratioWithoutLatestChild = double.infinity;
         slots = [];
@@ -264,11 +268,15 @@ class GalleryRenderObject extends RenderBox
             ratio: ratioWithLatestChild,
           ),
         );
+        totalWidth = math.max(totalWidth, maxRowWidth);
       } else {
         // Scaling up the last row makes it too big, so default to left aligned
+        final itemsWidth = math.max(totalWidth,
+            slots.fold(0.0, (accumulator, item) => accumulator + item.width));
+        totalWidth = math.max(itemsWidth, constraints.minWidth);
         rows.add((
           slots: slots,
-          ratio: 1.0,
+          ratio: totalWidth / itemsWidth,
         ));
       }
     }
@@ -281,7 +289,7 @@ class GalleryRenderObject extends RenderBox
             : 0.0);
     return GalleryLayout(
       rows: rows,
-      width: maxRowWidth.isNaN ? double.infinity : maxRowWidth,
+      width: totalWidth,
       height: totalHeight.isFinite ? totalHeight : 0.0,
     );
   }
