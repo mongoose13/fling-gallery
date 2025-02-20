@@ -1,24 +1,19 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:fling_gallery/fling_gallery.dart';
 
 void main() {
-  group("Gallery", () {
+  group("Greedy Layout Strategy", () {
     group("Sanity", () {
       testWidgets('Empty gallery lays itself out without errors',
           (WidgetTester tester) async {
         // given
         final gallery = Center(
           child: Gallery(
-            preferredRowHeight: 200.0,
+            layoutStrategy: GreedyLayout(
+              preferredRowHeight: 200.0,
+            ),
           ),
         );
 
@@ -30,7 +25,9 @@ void main() {
         // given
         final gallery = Center(
           child: Gallery(
-            preferredRowHeight: 200.0,
+            layoutStrategy: GreedyLayout(
+              preferredRowHeight: 200.0,
+            ),
             children: <Widget>[
               AspectRatio(aspectRatio: 10.0 / 10.0),
             ],
@@ -45,7 +42,9 @@ void main() {
         // given
         final gallery = Center(
           child: Gallery(
-            preferredRowHeight: 200.0,
+            layoutStrategy: GreedyLayout(
+              preferredRowHeight: 200.0,
+            ),
             children: <Widget>[
               AspectRatio(aspectRatio: 10.0 / 10.0),
               AspectRatio(aspectRatio: 40.0 / 20.0),
@@ -63,8 +62,10 @@ void main() {
           (WidgetTester tester) async {
         // given
         final gallery = Gallery(
-          horizontalSpacing: 0.0,
-          preferredRowHeight: 100.0,
+          layoutStrategy: GreedyLayout(
+            horizontalSpacing: 0.0,
+            preferredRowHeight: 100.0,
+          ),
           children: <Widget>[
             AspectRatio(aspectRatio: 10.0 / 50.0),
             AspectRatio(aspectRatio: 15.0 / 50.0),
@@ -93,9 +94,11 @@ void main() {
           (WidgetTester tester) async {
         // given
         final gallery = Gallery(
-          horizontalSpacing: 0.0,
-          maxScaleRatio: 4.0,
-          preferredRowHeight: 100.0,
+          layoutStrategy: GreedyLayout(
+            horizontalSpacing: 0.0,
+            maxScaleRatio: 4.0,
+            preferredRowHeight: 100.0,
+          ),
           children: <Widget>[
             AspectRatio(aspectRatio: 10.0 / 50.0),
             AspectRatio(aspectRatio: 15.0 / 50.0),
@@ -123,9 +126,11 @@ void main() {
           (WidgetTester tester) async {
         // given
         final gallery = Gallery(
-          forceFill: true,
-          horizontalSpacing: 0.0,
-          preferredRowHeight: 100.0,
+          layoutStrategy: GreedyLayout(
+            forceFill: true,
+            horizontalSpacing: 0.0,
+            preferredRowHeight: 100.0,
+          ),
           children: <Widget>[
             AspectRatio(aspectRatio: 5.0 / 50.0),
             AspectRatio(aspectRatio: 7.5 / 50.0),
@@ -154,8 +159,10 @@ void main() {
           (WidgetTester tester) async {
         // given
         final gallery = Gallery(
-          horizontalSpacing: 0.0,
-          preferredRowHeight: 100.0,
+          layoutStrategy: GreedyLayout(
+            horizontalSpacing: 0.0,
+            preferredRowHeight: 100.0,
+          ),
           children: <Widget>[
             AspectRatio(aspectRatio: 10.0 / 50.0),
             AspectRatio(aspectRatio: 15.0 / 50.0),
@@ -184,9 +191,11 @@ void main() {
           (WidgetTester tester) async {
         // given
         final gallery = Gallery(
-          forceFill: true,
-          horizontalSpacing: 0.0,
-          preferredRowHeight: 100.0,
+          layoutStrategy: GreedyLayout(
+            forceFill: true,
+            horizontalSpacing: 0.0,
+            preferredRowHeight: 100.0,
+          ),
           children: <Widget>[
             AspectRatio(aspectRatio: 5.0 / 50.0),
             AspectRatio(aspectRatio: 7.5 / 50.0),
@@ -214,8 +223,10 @@ void main() {
           (WidgetTester tester) async {
         // given
         final gallery = Gallery(
-          horizontalSpacing: 0.0,
-          preferredRowHeight: 100.0,
+          layoutStrategy: GreedyLayout(
+            horizontalSpacing: 0.0,
+            preferredRowHeight: 100.0,
+          ),
           children: <Widget>[
             AspectRatio(aspectRatio: 10.0 / 50.0),
             AspectRatio(aspectRatio: 15.0 / 50.0),

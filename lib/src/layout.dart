@@ -1,3 +1,4 @@
+import 'package:fling_gallery/src/render_object.dart';
 import 'package:flutter/rendering.dart';
 
 /// Represents the space taken up by a single item in the gallery.
@@ -18,11 +19,25 @@ class GalleryLayout {
   final double height;
   final List<GalleryRow> rows;
 
-  GalleryLayout({
+  const GalleryLayout({
     this.rows = const [],
     this.width = 0.0,
     this.height = 0.0,
   });
 
   Size get size => Size(width, height);
+}
+
+abstract class GalleryLayoutStrategy {
+  final double preferredRowHeight;
+  final double verticalSpacing;
+  final double horizontalSpacing;
+
+  GalleryLayoutStrategy({
+    required this.preferredRowHeight,
+    required this.verticalSpacing,
+    required this.horizontalSpacing,
+  });
+
+  GalleryLayout build(GalleryRenderObject renderer, BoxConstraints constraints);
 }

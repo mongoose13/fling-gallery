@@ -2,6 +2,17 @@
 
 A Flutter widget that lays out its children in tight rows.
 
+## [Unreleased]
+
+### Changed
+
+- The widget accepts a layout strategy, which has a specific interface
+- The old layout logic became the Greedy algorithm layout strategy
+
+### Added
+
+- A* (A-Star) algorithm layout strategy
+
 ## [0.2.0]
 
 ### Added
