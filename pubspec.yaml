@@ -1,16 +1,19 @@
 name: fling_gallery
 description: "A Flutter layout widget that positions its children in tight rows."
-version: 0.2.0
+version: 1.0.0
 homepage: https://fling-gallery-demo.web.app/
 repository: https://github.com/mongoose13/fling-gallery
 issue_tracker: https://github.com/mongoose13/fling-gallery/issues
 funding:
   - https://www.paypal.com/paypalme/BruceSantier
 topics:
-  - photography
+  - gallery
+  - image
+  - photo
+  - photos
 
 environment:
-  sdk: ^3.6.1
+  sdk: '>=3.0.0 < 4.0.0'
 
 dependencies:
   flutter:

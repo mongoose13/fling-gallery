@@ -2,7 +2,7 @@
 
 A Flutter widget that lays out its children in tight rows.
 
-## [Unreleased]
+## [1.0.0]
 
 ### Changed
 
@@ -47,6 +47,7 @@ A Flutter widget that lays out its children in tight rows.
 - CircleCI config
 
 [Unreleased]: https://bitbucket.org/mongoose13/fling-gallery/commits/
+[1.0.0]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/1.0.0
 [0.2.0]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/0.2.0
 [0.1.0]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/0.1.0
 [0.0.1]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/0.0.1
