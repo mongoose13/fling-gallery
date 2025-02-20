@@ -3,7 +3,7 @@ build:
 
 .PHONY: clean
 clean:
-	rm -rf build
+	rm -rf --interactive=never build
 
 .PHONY: run
 run:
@@ -11,3 +11,14 @@ run:
 
 deploy: build
 	firebase deploy
+
+.PHONY: test
+test:
+	flutter test
+
+~/.pub-cache/bin/pana:
+	dart pub global activate pana
+
+.PHONY: pana
+pana: ~/.pub-cache/bin/pana
+	~/.pub-cache/bin/pana --exit-code-threshold 0

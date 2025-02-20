@@ -8,6 +8,7 @@ A Flutter widget that lays out its children in tight rows.
 
 - The widget accepts a layout strategy, which has a specific interface
 - The old layout logic became the Greedy algorithm layout strategy
+- Example is fully functional app with both strategies showcased
 
 ### Added
 
