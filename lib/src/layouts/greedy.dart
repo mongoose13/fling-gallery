@@ -15,7 +15,7 @@ import '../render_object.dart';
 /// preferred row height. If the last row can not meet this requirement, it
 /// will remain incomplete (it won't take up the entire width). This behavior
 /// can be overridden by setting [forceFill] to `true`.
-class GreedyLayout extends GalleryLayoutStrategy {
+class GreedyGalleryLayout extends GalleryLayoutStrategy {
   /// The maximum number of items per row.
   final int? maxRowItems;
 
@@ -24,7 +24,7 @@ class GreedyLayout extends GalleryLayoutStrategy {
   final bool forceFill;
 
   /// Constructor.
-  GreedyLayout({
+  GreedyGalleryLayout({
     required super.preferredRowHeight,
     this.maxRowItems,
     this.maxScaleRatio = 2.0,

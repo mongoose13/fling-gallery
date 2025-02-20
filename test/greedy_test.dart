@@ -11,7 +11,7 @@ void main() {
         // given
         final gallery = Center(
           child: Gallery(
-            layoutStrategy: GreedyLayout(
+            layoutStrategy: GreedyGalleryLayout(
               preferredRowHeight: 200.0,
             ),
           ),
@@ -25,7 +25,7 @@ void main() {
         // given
         final gallery = Center(
           child: Gallery(
-            layoutStrategy: GreedyLayout(
+            layoutStrategy: GreedyGalleryLayout(
               preferredRowHeight: 200.0,
             ),
             children: <Widget>[
@@ -42,7 +42,7 @@ void main() {
         // given
         final gallery = Center(
           child: Gallery(
-            layoutStrategy: GreedyLayout(
+            layoutStrategy: GreedyGalleryLayout(
               preferredRowHeight: 200.0,
             ),
             children: <Widget>[
@@ -62,7 +62,7 @@ void main() {
           (WidgetTester tester) async {
         // given
         final gallery = Gallery(
-          layoutStrategy: GreedyLayout(
+          layoutStrategy: GreedyGalleryLayout(
             horizontalSpacing: 0.0,
             preferredRowHeight: 100.0,
           ),
@@ -94,7 +94,7 @@ void main() {
           (WidgetTester tester) async {
         // given
         final gallery = Gallery(
-          layoutStrategy: GreedyLayout(
+          layoutStrategy: GreedyGalleryLayout(
             horizontalSpacing: 0.0,
             maxScaleRatio: 4.0,
             preferredRowHeight: 100.0,
@@ -126,7 +126,7 @@ void main() {
           (WidgetTester tester) async {
         // given
         final gallery = Gallery(
-          layoutStrategy: GreedyLayout(
+          layoutStrategy: GreedyGalleryLayout(
             forceFill: true,
             horizontalSpacing: 0.0,
             preferredRowHeight: 100.0,
@@ -159,7 +159,7 @@ void main() {
           (WidgetTester tester) async {
         // given
         final gallery = Gallery(
-          layoutStrategy: GreedyLayout(
+          layoutStrategy: GreedyGalleryLayout(
             horizontalSpacing: 0.0,
             preferredRowHeight: 100.0,
           ),
@@ -191,7 +191,7 @@ void main() {
           (WidgetTester tester) async {
         // given
         final gallery = Gallery(
-          layoutStrategy: GreedyLayout(
+          layoutStrategy: GreedyGalleryLayout(
             forceFill: true,
             horizontalSpacing: 0.0,
             preferredRowHeight: 100.0,
@@ -223,7 +223,7 @@ void main() {
           (WidgetTester tester) async {
         // given
         final gallery = Gallery(
-          layoutStrategy: GreedyLayout(
+          layoutStrategy: GreedyGalleryLayout(
             horizontalSpacing: 0.0,
             preferredRowHeight: 100.0,
           ),

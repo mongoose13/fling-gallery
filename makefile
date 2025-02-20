@@ -5,5 +5,9 @@ build:
 clean:
 	rm -rf build
 
+.PHONY: run
+run:
+	flutter run -d chrome example/main.dart
+
 deploy: build
 	firebase deploy

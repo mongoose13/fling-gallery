@@ -8,14 +8,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fling Gallery Demo',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Fling Gallery Demo - 0.2.0"),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
+    return DefaultTabController(
+      length: 2,
+      child: MaterialApp(
+        title: 'Fling Gallery Demo',
+        home: Scaffold(
+          appBar: AppBar(
+            title: Text("Fling Gallery Demo - 0.2.0"),
+            bottom: TabBar(
+              tabs: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text("AStarGalleryLayout"),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text("GreedyGalleryLayout"),
+                ),
+              ],
+            ),
+          ),
+          body: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
@@ -23,23 +36,49 @@ class MyApp extends StatelessWidget {
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               Divider(),
-              Text("preferredRowHeight = 300\nforceFill = true"),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 48.0),
-                padding: EdgeInsets.all(8.0),
-                color: Colors.blueGrey,
-                child: fling.Gallery(
-                  layoutStrategy: fling.GreedyLayout(
-                    horizontalSpacing: 0.0,
-                    verticalSpacing: 0.0,
-                    preferredRowHeight: 300.0,
-                    forceFill: true,
-                  ),
-                  children: List.generate(
-                    11,
-                    (index) => Image.network(
-                        "https://f000.backblazeb2.com/file/mongoose-website/fling-gallery/img_${index < 9 ? "0${index + 1}" : index + 1}.jpg"),
-                  ),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    SingleChildScrollView(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 48.0),
+                        padding: EdgeInsets.all(8.0),
+                        color: Colors.blueGrey,
+                        child: fling.Gallery(
+                          layoutStrategy: fling.AStarGalleryLayout(
+                            minRatio: 0.7,
+                            maxRatio: 1.3,
+                            horizontalSpacing: 0.0,
+                            verticalSpacing: 0.0,
+                            preferredRowHeight: 300.0,
+                          ),
+                          children: List.generate(
+                            11,
+                            (index) => Image.network(
+                                "https://f000.backblazeb2.com/file/mongoose-website/fling-gallery/img_${index < 9 ? "0${index + 1}" : index + 1}.jpg"),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 48.0),
+                        padding: EdgeInsets.all(8.0),
+                        color: Colors.blueGrey,
+                        child: fling.Gallery(
+                          layoutStrategy: fling.GreedyGalleryLayout(
+                            preferredRowHeight: 300.0,
+                            forceFill: true,
+                          ),
+                          children: List.generate(
+                            11,
+                            (index) => Image.network(
+                                "https://f000.backblazeb2.com/file/mongoose-website/fling-gallery/img_${index < 9 ? "0${index + 1}" : index + 1}.jpg"),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
