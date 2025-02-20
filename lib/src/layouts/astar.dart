@@ -3,10 +3,24 @@ import 'package:flutter/rendering.dart';
 import '../layout.dart';
 import '../render_object.dart';
 
+/// A layout strategy that attempts to optimize item fit across all rows using
+/// a variety of the A* algorithm.
+///
+/// See [Wikipedia](https://en.wikipedia.org/wiki/A*_search_algorithm) for an
+/// introduction to A*.
+///
+/// This strategy relies on a minimum and maximum ratio. This ratio refers to
+/// how far from the preferred row height an item is allowed to be.
+///
+/// Any row whose children all fit within the bounds of the ratios is considered
+/// good, regardless of how far away from the preferred row height the result
+/// actually is. Solutions with rows that deviate from the range are penalized
+/// based on how far from the preferred row height each row is.
 class AStarGalleryLayout extends GalleryLayoutStrategy {
   final double minRatio;
   final double maxRatio;
 
+  /// Constructor.
   AStarGalleryLayout({
     required super.preferredRowHeight,
     required this.minRatio,

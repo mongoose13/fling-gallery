@@ -5,11 +5,25 @@ import 'package:flutter/rendering.dart';
 import '../layout.dart';
 import '../render_object.dart';
 
+/// A layout strategy that fills rows with as many children as possible within
+/// some constraints, without concern for how that may affect future rows.
+///
+/// While this strategy may not give optimal results, it will likely be a bit
+/// faster than other algorithms.
+///
+/// Each complete row will not deviate more than [maxScaleRatio] from the
+/// preferred row height. If the last row can not meet this requirement, it
+/// will remain incomplete (it won't take up the entire width). This behavior
+/// can be overridden by setting [forceFill] to `true`.
 class GreedyLayout extends GalleryLayoutStrategy {
+  /// The maximum number of items per row.
   final int? maxRowItems;
+
+  /// The maximum allowed auto scale ratio.
   final double maxScaleRatio;
   final bool forceFill;
 
+  /// Constructor.
   GreedyLayout({
     required super.preferredRowHeight,
     this.maxRowItems,
@@ -19,7 +33,6 @@ class GreedyLayout extends GalleryLayoutStrategy {
     super.horizontalSpacing = 4.0,
   });
 
-  /// Calculates the finished layout given parent constraints.
   @override
   GalleryLayout build(
       GalleryRenderObject renderer, BoxConstraints constraints) {

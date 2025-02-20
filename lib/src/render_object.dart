@@ -21,6 +21,7 @@ class GalleryRenderObject extends RenderBox
     }
   }
 
+  /// The [RenderObject] for the [Gallery] widget.
   GalleryRenderObject({
     required GalleryLayoutStrategy layoutStrategy,
     List<RenderBox>? children,

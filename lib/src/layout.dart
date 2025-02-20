@@ -28,16 +28,19 @@ class GalleryLayout {
   Size get size => Size(width, height);
 }
 
+/// Base class for gallery layout strategies.
 abstract class GalleryLayoutStrategy {
   final double preferredRowHeight;
   final double verticalSpacing;
   final double horizontalSpacing;
 
+  /// Constructor.
   GalleryLayoutStrategy({
     required this.preferredRowHeight,
     required this.verticalSpacing,
     required this.horizontalSpacing,
   });
 
+  /// Calculates the finished layout given parent constraints.
   GalleryLayout build(GalleryRenderObject renderer, BoxConstraints constraints);
 }
