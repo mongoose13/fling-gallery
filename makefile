@@ -7,7 +7,7 @@ clean:
 
 .PHONY: run
 run:
-	flutter run -d chrome example/main.dart
+	flutter run -d chrome --no-hot example/main.dart
 
 deploy: build
 	firebase deploy
