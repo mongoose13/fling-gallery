@@ -48,8 +48,6 @@ class MyApp extends StatelessWidget {
                           layoutStrategy: fling.AStarGalleryLayout(
                             minRatio: 0.7,
                             maxRatio: 1.3,
-                            horizontalSpacing: 0.0,
-                            verticalSpacing: 0.0,
                             preferredRowHeight: 300.0,
                           ),
                           children: List.generate(

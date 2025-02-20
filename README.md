@@ -12,30 +12,55 @@ A Flutter widget that lays out its children into tight rows.
 
 This widget creates rows for its children not unlike a Wrap widget. However, unlike the Wrap widget, this widget tries to size its children so that they fit perfectly on each row. This widget is expected to be used with children that maintain their aspect ratios, such as [Image](https://api.flutter.dev/flutter/widgets/Image-class.html) or [AspectRatio](https://api.flutter.dev/flutter/widgets/AspectRatio-class.html).
 
-The current implementation uses a greedy algorithm and thus may not optimally arrange items. In particular, the last row may not have enough items to fill it completely. You can still control how the last row is rendered: either force it to be filled, or set sensible ratios at which point you would want to force the row to be filled.
+We offer two algorithms: greedy and A*. A* will generally give better results, but if performance is a concern, consider using the greedy algorithm instead. The A* algorithm also tends to shift things around more dramatically as the gallery resizes, so if smoothness during resize is a concern you may be better off with the greedy algorithm. You can play with both on the demo page.
 
 [Demo Page](https://fling-gallery-demo.web.app/)
 
 ![Example gallery with photos of Yellowstone](https://f000.backblazeb2.com/file/mongoose-website/fling-gallery/fling-gallery-snap.png)
 
-## Parameters
+## Usage
 
-### preferredRowHeight
+### Installation
 
-This defines the preferred height for each row. The widget will attempt to resize its children to make them fit as close to this height as possible while completely filling each row.
+Install the widget the usual way:
 
-### maxRowItems
+> $> flutter pub add fling_gallery
 
-Set a maximum number of items in each row. Leave empty to allow any number of items so long as they fit reasonably well within the bounds of the row.
+...or add it manually to your `pubspec.yaml` under "dependencies", then:
 
-### horizontal / veticalSpacing
+> $> flutter pub get
 
-Changes the amount of space left blank in between items, both horizontally and vertically.
+You can then import it in your code:
 
-### maxScaleRatio
+```dart
+import 'package:fling_gallery/fling_gallery.dart';
+```
 
-Sets the threshold for when the algorithm will decide to render a row that is too short (width-wise) using the `preferredRowHeight` rather than forcing the row to fill completely (thus going over the `preferredRowHeight`). The larger this number, the more likely the widget is to force fill the last row.
+### Instantiation
 
-### forceFill
+Place the widget in a constrained space of your widget tree. It will (generally) attempt to take up as much horizontal space as it is given. It will take up as much vertical space as it needs given the horizontal constraints, limited by the vertical constraints you give it.
 
-Forces the last row to fill the width completely regardless of how much this means the row height must differ from `preferredRowHeight`.
+Ensure the children are aspect ratio aware for best results. The built-in `Image` class does this, but you can also wrap your children in `AspectRatio` widgets.
+
+Choose an implementation of `GalleryLayout` you want to use, and pass that along with the children you want to lay out to its constructor.
+
+For example:
+```dart
+@override
+Widget build(BuildContext context) {
+    // ...
+        Gallery(
+            layoutStrategy: AStarGalleryLayout(
+            minRatio: 0.7,
+            maxRatio: 1.3,
+            horizontalSpacing: 4.0,
+            verticalSpacing: 4.0,
+            preferredRowHeight: 300.0,
+            ),
+            children: <Widget>[
+                // ...
+            ],
+        )
+    // ...
+}
+```
