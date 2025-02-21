@@ -1,6 +1,6 @@
 name: fling_gallery
 description: "A Flutter layout widget that positions its children in tight rows."
-version: 1.0.0
+version: 1.0.1
 homepage: https://fling-gallery-demo.web.app/
 repository: https://github.com/mongoose13/fling-gallery
 issue_tracker: https://github.com/mongoose13/fling-gallery/issues
