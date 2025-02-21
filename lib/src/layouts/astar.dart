@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../layout.dart';
@@ -21,13 +22,17 @@ import '../render_object.dart';
 class AStarGalleryLayout extends GalleryLayoutStrategy {
   final double minRatio;
   final double maxRatio;
+  final bool forceFill;
   final BoxConstraints preferredConstraints;
 
-  /// Constructor.
+  /// [forceFill] allows the ratio constraints to be ignored in cases where the
+  /// row cannot meet the ratio constraints and still take the entire width the
+  /// widget has been allocated.
   AStarGalleryLayout({
     required super.preferredRowHeight,
     required this.minRatio,
     required this.maxRatio,
+    this.forceFill = true,
     super.horizontalSpacing = 4.0,
     super.verticalSpacing = 4.0,
   }) : preferredConstraints = BoxConstraints(maxHeight: preferredRowHeight) {
@@ -45,7 +50,11 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
 
     // shortcut
     if (constraints.maxWidth * minRatio > totalChildWidth) {
-      return _singleRowLayout(renderer, constraints, totalChildWidth);
+      return _singleRowLayout(
+        renderer: renderer,
+        constraints: constraints,
+        totalChildWidth: totalChildWidth,
+      );
     }
 
     final options = <_AStarOption>[];
@@ -85,7 +94,7 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
         ratio = (constraints.maxWidth - currentRowPadding) / currentRowWidth;
 
         currentChild = renderer.childAfter(currentChild);
-        if (ratio <= maxRatio) {
+        if (ratio <= maxRatio && ratio >= minRatio) {
           options.add(
             _AStarOption(
               layout: this,
@@ -105,10 +114,11 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
             _AStarOption(
               layout: this,
               constraints: constraints,
-              rows: option.rows.followedBy(
-                  [(slots: slots, ratio: ratio)]).toList(growable: false),
-              currentChild: currentChild,
-              remainingWidth: remainingWidth,
+              rows: option.rows.followedBy([
+                (slots: slots, ratio: forceFill ? ratio : maxRatio)
+              ]).toList(growable: false),
+              currentChild: null,
+              remainingWidth: 0.0,
               score: constraints.maxWidth - currentRowWidth,
             ),
           );
@@ -117,44 +127,40 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
     }
 
     assert(false, "Did not find a working solution: please file a bug report");
-    return _singleRowLayout(renderer, constraints, totalChildWidth);
+    return _singleRowLayout(
+      renderer: renderer,
+      constraints: constraints,
+      totalChildWidth: totalChildWidth,
+    );
   }
 
   /// Create a layout that just puts everything on a single row.
   ///
   /// Useful if you don't need more than one row, or if you otherwise don't know
   /// what to do.
-  GalleryLayout _singleRowLayout(
-    GalleryRenderObject renderer,
-    BoxConstraints constraints,
-    double totalChildWidth,
-  ) {
+  GalleryLayout _singleRowLayout({
+    required GalleryRenderObject renderer,
+    required BoxConstraints constraints,
+    required double totalChildWidth,
+  }) {
     return _AStarOption(
       layout: this,
       constraints: constraints,
-      rows: <GalleryRow>[
-        (
-          slots: renderer.children
-              .map<GallerySlot>(
-                (child) => (
-                  child: child,
-                  width: child.getDryLayout(preferredConstraints).width,
-                ),
-              )
-              .toList(growable: false),
-          ratio: math.max(
-            math.min(
-              constraints.maxWidth /
-                  (totalChildWidth +
-                      (renderer.childCount > 1
-                          ? (renderer.childCount - 1) * horizontalSpacing
-                          : 0)),
-              maxRatio,
-            ),
-            minRatio,
-          ),
-        ),
-      ],
+      rows: renderer.childCount > 0
+          ? <GalleryRow>[
+              (
+                slots: renderer.children
+                    .map<GallerySlot>(
+                      (child) => (
+                        child: child,
+                        width: child.getDryLayout(preferredConstraints).width,
+                      ),
+                    )
+                    .toList(growable: false),
+                ratio: maxRatio,
+              ),
+            ]
+          : const [],
       currentChild: null,
       remainingWidth: 0.0,
       score: 0.0,
@@ -170,7 +176,7 @@ class _AStarOption implements Comparable<_AStarOption> {
   final double remainingWidth;
   final double score;
 
-  _AStarOption({
+  const _AStarOption({
     required this.layout,
     required this.constraints,
     required this.rows,
@@ -184,7 +190,19 @@ class _AStarOption implements Comparable<_AStarOption> {
   GalleryLayout build() {
     return GalleryLayout(
       rows: rows,
-      width: constraints.maxWidth,
+      width: rows.isEmpty
+          ? constraints.minWidth
+          : !layout.forceFill && rows.length == 1
+              ? math.max(
+                  rows.first.slots.fold(
+                      -layout.horizontalSpacing,
+                      (accumulator, slot) =>
+                          accumulator +
+                          slot.width * rows.first.ratio +
+                          layout.horizontalSpacing),
+                  0.0,
+                )
+              : constraints.maxWidth,
       height: math.max(
         math.min(
           rows.fold(

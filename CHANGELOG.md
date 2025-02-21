@@ -2,6 +2,16 @@
 
 A Flutter widget that lays out its children in tight rows.
 
+## [1.0.1]
+
+### Added
+
+- Tests for AStar layout strategy
+
+### Changed
+
+- Improvements in layout behavior for the AStar algorithm to avoid breaching parent size contracts
+
 ## [1.0.0]
 
 ### Changed

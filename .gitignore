@@ -17,6 +17,7 @@ doc/api/
 *.iml
 *.ipr
 *.iws
+settings.json
 
 # Firebase
 .firebase/
