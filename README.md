@@ -51,11 +51,11 @@ Widget build(BuildContext context) {
     // ...
         Gallery(
             layoutStrategy: AStarGalleryLayout(
-            minRatio: 0.7,
-            maxRatio: 1.3,
-            horizontalSpacing: 4.0,
-            verticalSpacing: 4.0,
-            preferredRowHeight: 300.0,
+                minRatio: 0.7,
+                maxRatio: 1.3,
+                horizontalSpacing: 4.0,
+                verticalSpacing: 4.0,
+                preferredRowHeight: 300.0,
             ),
             children: <Widget>[
                 // ...
