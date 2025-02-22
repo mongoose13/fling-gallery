@@ -102,6 +102,36 @@ void main() {
             // then
             expect(tester.getSize(find.byType(Gallery)), Size(200.0, 100.0));
           });
+          testWidgets("constrains height to max ratio if children are infinite",
+              (WidgetTester tester) async {
+            // given
+            final widget = buildConstrainedBox(
+              BoxConstraints(
+                minWidth: 0.0,
+                maxWidth: 200.0,
+                minHeight: 200.0,
+                maxHeight: double.infinity,
+              ),
+              Gallery(
+                layoutStrategy: AStarGalleryLayout(
+                  preferredRowHeight: 100.0,
+                  minRatio: 0.5,
+                  maxRatio: 2.5,
+                  horizontalSpacing: 0.0,
+                  verticalSpacing: 0.0,
+                ),
+                children: <Widget>[
+                  ConstrainedBox(constraints: BoxConstraints()),
+                ],
+              ),
+            );
+
+            // when
+            await tester.pumpWidget(widget);
+
+            // then
+            expect(tester.getSize(find.byType(Gallery)), Size(200.0, 250.0));
+          });
           testWidgets("respects minimum height", (WidgetTester tester) async {
             // given
             final widget = buildConstrainedBox(
@@ -206,7 +236,7 @@ void main() {
                   preferredRowHeight: 100.0,
                   forceFill: true,
                   minRatio: 0.5,
-                  maxRatio: 1.1,
+                  maxRatio: 1.2,
                   horizontalSpacing: 0.0,
                   verticalSpacing: 0.0,
                 ),
@@ -315,7 +345,7 @@ void main() {
             // then
             expect(tester.getSize(find.byType(Gallery)), Size(200.0, 100.0));
           });
-          testWidgets("keeps to ratio constraints",
+          testWidgets("keeps to max ratio if insufficient content",
               (WidgetTester tester) async {
             // given
             final widget = buildConstrainedBox(
@@ -378,6 +408,38 @@ void main() {
 
             // then
             expect(tester.getSize(find.byType(Gallery)), Size(200.0, 200.0));
+          });
+          testWidgets("overridden ratios still limited by page constraints",
+              (WidgetTester tester) async {
+            // given
+            final widget = buildConstrainedBox(
+              BoxConstraints(
+                minWidth: 0.0,
+                maxWidth: 80.0,
+                minHeight: 0.0,
+                maxHeight: double.infinity,
+              ),
+              Gallery(
+                layoutStrategy: AStarGalleryLayout(
+                  preferredRowHeight: 100.0,
+                  forceFill: true,
+                  minRatio: 0.9,
+                  maxRatio: 1.1,
+                  horizontalSpacing: 0.0,
+                  verticalSpacing: 0.0,
+                ),
+                children: <Widget>[
+                  AspectRatio(aspectRatio: 2.0),
+                  AspectRatio(aspectRatio: 2.0),
+                ],
+              ),
+            );
+
+            // when
+            await tester.pumpWidget(widget);
+
+            // then
+            expect(tester.getSize(find.byType(Gallery)), Size(80.0, 80.0));
           });
         });
 

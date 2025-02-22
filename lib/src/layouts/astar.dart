@@ -49,7 +49,7 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
         renderer.computeMaxIntrinsicWidth(preferredRowHeight);
 
     // shortcut
-    if (constraints.maxWidth * minRatio > totalChildWidth) {
+    if (constraints.maxWidth > maxRatio * totalChildWidth) {
       return _singleRowLayout(
         renderer: renderer,
         constraints: constraints,
@@ -83,18 +83,25 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
       var ratio = maxRatio;
       final slots = <GallerySlot>[];
       while (currentChild != null && ratio >= minRatio) {
+        // calculate effects of one more child in this row
         final currentChildPreferredWidth =
             currentChild.getDryLayout(preferredConstraints).width;
         if (slots.isNotEmpty) {
           currentRowPadding += horizontalSpacing;
         }
-        slots.add((child: currentChild, width: currentChildPreferredWidth));
         remainingWidth -= currentChildPreferredWidth;
         currentRowWidth += currentChildPreferredWidth;
         ratio = (constraints.maxWidth - currentRowPadding) / currentRowWidth;
 
-        currentChild = renderer.childAfter(currentChild);
+        // we can (or must) accept this child
+        if (slots.isEmpty || ratio >= minRatio) {
+          slots.add((child: currentChild, width: currentChildPreferredWidth));
+          currentChild = renderer.childAfter(currentChild);
+        }
+
+        // determine of the row is complete
         if (ratio <= maxRatio && ratio >= minRatio) {
+          // this row is within bounds: accept it
           options.add(
             _AStarOption(
               layout: this,
@@ -109,7 +116,10 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
                       (remainingWidth % constraints.maxWidth),
             ),
           );
-        } else if (currentChild == null) {
+        } else if (currentChild == null ||
+            (slots.length == 1 && ratio < minRatio)) {
+          // we must accept this row:
+          // it either has only one item, or there are no more children
           options.add(
             _AStarOption(
               layout: this,
@@ -117,8 +127,8 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
               rows: option.rows.followedBy([
                 (slots: slots, ratio: forceFill ? ratio : maxRatio)
               ]).toList(growable: false),
-              currentChild: null,
-              remainingWidth: 0.0,
+              currentChild: currentChild,
+              remainingWidth: remainingWidth,
               score: constraints.maxWidth - currentRowWidth,
             ),
           );
@@ -126,7 +136,8 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
       }
     }
 
-    assert(false, "Did not find a working solution: please file a bug report");
+    assert(options.isNotEmpty,
+        "Did not find a working solution: please file a bug report");
     return _singleRowLayout(
       renderer: renderer,
       constraints: constraints,
@@ -157,7 +168,11 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
                       ),
                     )
                     .toList(growable: false),
-                ratio: maxRatio,
+                ratio: forceFill
+                    ? (constraints.maxWidth -
+                            (renderer.childCount - 1) * horizontalSpacing) /
+                        totalChildWidth
+                    : maxRatio,
               ),
             ]
           : const [],
@@ -195,22 +210,23 @@ class _AStarOption implements Comparable<_AStarOption> {
           : !layout.forceFill && rows.length == 1
               ? math.max(
                   rows.first.slots.fold(
-                      -layout.horizontalSpacing,
-                      (accumulator, slot) =>
-                          accumulator +
-                          slot.width * rows.first.ratio +
-                          layout.horizontalSpacing),
+                    -layout.horizontalSpacing,
+                    (accumulator, slot) =>
+                        accumulator +
+                        slot.width * rows.first.ratio +
+                        layout.horizontalSpacing,
+                  ),
                   0.0,
                 )
               : constraints.maxWidth,
       height: math.max(
         math.min(
           rows.fold(
-            -layout.verticalSpacing,
+            math.max(rows.length - 1, 0) * layout.verticalSpacing,
             (accumulator, row) =>
                 accumulator +
-                row.ratio * layout.preferredRowHeight +
-                layout.verticalSpacing,
+                (row.ratio.isFinite ? row.ratio : layout.maxRatio) *
+                    layout.preferredRowHeight,
           ),
           constraints.maxHeight,
         ),
