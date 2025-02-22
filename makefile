@@ -1,24 +1,28 @@
-build:
+build: pubspec.lock
 	flutter build web -t example/main.dart
 
 .PHONY: clean
 clean:
-	rm -rf --interactive=never build
+	rm -rf --interactive=never build pubspec.lock
 
 .PHONY: run
-run:
+run: pubspec.lock
 	flutter run -d chrome --no-hot example/main.dart
 
 deploy: build
 	firebase deploy
 
 .PHONY: test
-test:
+test: pubspec.lock
 	flutter test
-
-~/.pub-cache/bin/pana:
-	dart pub global activate pana
 
 .PHONY: pana
 pana: ~/.pub-cache/bin/pana
-	~/.pub-cache/bin/pana --exit-code-threshold 0
+	~/.pub-cache/bin/pana . --no-warning --exit-code-threshold 0
+
+# Tool-based outputs
+pubspec.lock: pubspec.yaml
+	flutter pub get
+
+~/.pub-cache/bin/pana:
+	dart pub global activate pana

@@ -1,4 +1,4 @@
-name: Dart
+name: Validate library quality
 
 on:
   push:
@@ -15,17 +15,8 @@ jobs:
       # https://github.com/marketplace/actions/flutter-action
       - uses: subosito/flutter-action@ce3cf2160d822f73fcb0cf0a8fb549a85e464eab
 
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
-
-      - name: Analyze project source
-        run: dart analyze --fatal-infos
-
       - name: Run tests
-        run: flutter test
+        run: make test
 
       - name: Run pana
-        run: dart pub global activate pana && ~/.pub-cache/bin/pana . --no-warning --exit-code-threshold 0
+        run: make pana
