@@ -37,6 +37,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build
         run: make build
+      - name: Bundle build output
         run: tar -cf pages.tar -C ./build/web $(cd ./build/web ; echo *)
       - name: Upload artifacts
         uses: actions/upload-pages-artifact@v3
