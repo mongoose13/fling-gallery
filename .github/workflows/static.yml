@@ -37,10 +37,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Build
         run: make build
+        run: tar -cf pages.tar -C ./build/web $(cd ./build/web ; echo *)
       - name: Upload artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './build/web/*'
+          path: './pages.tar'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
