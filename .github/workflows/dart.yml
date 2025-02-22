@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       # https://github.com/marketplace/actions/flutter-action
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@ce3cf2160d822f73fcb0cf0a8fb549a85e464eab
 
       - name: Install dependencies
         run: flutter pub get
