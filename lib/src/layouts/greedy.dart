@@ -62,7 +62,8 @@ class GreedyGalleryLayout extends GalleryLayoutStrategy {
         rows.add(
           (
             slots: slots,
-            ratio: ratioWithoutLatestChild,
+            ratio:
+                ratioWithoutLatestChild.isFinite ? ratioWithLatestChild : 1.0,
           ),
         );
         // reset
@@ -107,7 +108,7 @@ class GreedyGalleryLayout extends GalleryLayoutStrategy {
         rows.add(
           (
             slots: slots,
-            ratio: ratioWithLatestChild,
+            ratio: ratioWithLatestChild.isFinite ? ratioWithLatestChild : 1.0,
           ),
         );
         totalWidth = math.max(totalWidth, maxRowWidth);
@@ -116,9 +117,10 @@ class GreedyGalleryLayout extends GalleryLayoutStrategy {
         final itemsWidth = math.max(totalWidth,
             slots.fold(0.0, (accumulator, item) => accumulator + item.width));
         totalWidth = math.max(itemsWidth, constraints.minWidth);
+        final ratio = totalWidth / itemsWidth;
         rows.add((
           slots: slots,
-          ratio: totalWidth / itemsWidth,
+          ratio: ratio.isFinite ? ratio : 1.0,
         ));
       }
     }

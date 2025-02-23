@@ -285,6 +285,39 @@ void main() {
             // then
             expect(tester.getSize(find.byType(Gallery)), Size(200.0, 100.0));
           });
+          testWidgets("positions a child after a zero width child",
+              (WidgetTester tester) async {
+            // given
+            final firstChild = Container();
+            final secondChild = Container();
+            final widget = buildConstrainedBox(
+              BoxConstraints(
+                minWidth: 0.0,
+                maxWidth: 200.0,
+                minHeight: 0.0,
+                maxHeight: double.infinity,
+              ),
+              Gallery(
+                layoutStrategy: AStarGalleryLayout(
+                  preferredRowHeight: 100.0,
+                  minRatio: 0.5,
+                  maxRatio: 2.0,
+                  horizontalSpacing: 0.0,
+                  verticalSpacing: 0.0,
+                ),
+                children: <Widget>[firstChild, secondChild],
+              ),
+            );
+
+            // when
+            await tester.pumpWidget(widget);
+
+            // then
+            expect(
+                tester.getTopLeft(find.byWidget(firstChild)), Offset(0.0, 0.0));
+            expect(tester.getTopLeft(find.byWidget(secondChild)),
+                Offset(0.0, 0.0));
+          });
           testWidgets("respects minimum height", (WidgetTester tester) async {
             // given
             final widget = buildConstrainedBox(

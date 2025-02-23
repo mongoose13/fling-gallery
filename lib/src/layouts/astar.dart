@@ -154,6 +154,11 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
     required BoxConstraints constraints,
     required double totalChildWidth,
   }) {
+    final ratio = forceFill
+        ? (constraints.maxWidth -
+                (renderer.childCount - 1) * horizontalSpacing) /
+            totalChildWidth
+        : maxRatio;
     return _AStarOption(
       layout: this,
       constraints: constraints,
@@ -168,11 +173,7 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
                       ),
                     )
                     .toList(growable: false),
-                ratio: forceFill
-                    ? (constraints.maxWidth -
-                            (renderer.childCount - 1) * horizontalSpacing) /
-                        totalChildWidth
-                    : maxRatio,
+                ratio: ratio.isFinite ? ratio : maxRatio,
               ),
             ]
           : const [],
@@ -224,9 +225,7 @@ class _AStarOption implements Comparable<_AStarOption> {
           rows.fold(
             math.max(rows.length - 1, 0) * layout.verticalSpacing,
             (accumulator, row) =>
-                accumulator +
-                (row.ratio.isFinite ? row.ratio : layout.maxRatio) *
-                    layout.preferredRowHeight,
+                accumulator + row.ratio * layout.preferredRowHeight,
           ),
           constraints.maxHeight,
         ),

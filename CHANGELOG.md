@@ -2,6 +2,12 @@
 
 A Flutter widget that lays out its children in tight rows.
 
+## [1.0.3]
+
+### Fixed
+
+- Prevent infinote row ratios in both algorithms when zero-size children are added, which leads to invalid child placement during layout
+
 ## [1.0.2]
 
 ### Added

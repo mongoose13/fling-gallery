@@ -250,6 +250,38 @@ void main() {
         // then
         expect(tester.getSize(find.byWidget(gallery)), Size(60.0, 120.0));
       });
+      testWidgets("positions a child after a zero width child",
+          (WidgetTester tester) async {
+        // given
+        final firstChild = Container();
+        final secondChild = Container();
+        final widget = Align(
+          alignment: Alignment.topLeft,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: 0.0,
+              maxWidth: 200.0,
+              minHeight: 0.0,
+              maxHeight: double.infinity,
+            ),
+            child: Gallery(
+              layoutStrategy: GreedyGalleryLayout(
+                preferredRowHeight: 100.0,
+                horizontalSpacing: 0.0,
+                verticalSpacing: 0.0,
+              ),
+              children: <Widget>[firstChild, secondChild],
+            ),
+          ),
+        );
+
+        // when
+        await tester.pumpWidget(widget);
+
+        // then
+        expect(tester.getTopLeft(find.byWidget(firstChild)), Offset(0.0, 0.0));
+        expect(tester.getTopLeft(find.byWidget(secondChild)), Offset(0.0, 0.0));
+      });
     });
   });
 }
