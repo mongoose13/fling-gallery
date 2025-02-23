@@ -2,6 +2,10 @@
 
 A Flutter widget that lays out its children in tight rows.
 
+## [Unreleased]
+
+None (yet).
+
 ## [1.0.3]
 
 ### Fixed
@@ -73,11 +77,11 @@ A Flutter widget that lays out its children in tight rows.
 - Basic test suite
 - CircleCI config
 
-[Unreleased]: https://bitbucket.org/mongoose13/fling-gallery/commits/
-[1.0.3]: https://github.com/mongoose13/fling-gallery/tree/v1.0.3
-[1.0.2]: https://github.com/mongoose13/fling-gallery/tree/v1.0.2
-[1.0.1]: https://github.com/mongoose13/fling-gallery/tree/v1.0.1
-[1.0.0]: https://github.com/mongoose13/fling-gallery/tree/v1.0.0
-[0.2.0]: https://github.com/mongoose13/fling-gallery/tree/v0.2.0
-[0.1.0]: https://github.com/mongoose13/fling-gallery/tree/v0.1.0
+[Unreleased]: https://github.com/mongoose13/fling-gallery/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/mongoose13/fling-gallery/compare/v1.0.2...v1.0.3
+[1.0.2]: https://github.com/mongoose13/fling-gallery/compare/v1.0.1...v1.0.2
+[1.0.1]: https://github.com/mongoose13/fling-gallery/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/mongoose13/fling-gallery/compare/v0.2.0...v1.0.0
+[0.2.0]: https://github.com/mongoose13/fling-gallery/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/mongoose13/fling-gallery/compare/v0.0.1...v0.1.0
 [0.0.1]: https://github.com/mongoose13/fling-gallery/tree/v0.0.1
