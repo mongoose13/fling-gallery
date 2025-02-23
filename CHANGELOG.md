@@ -74,9 +74,10 @@ A Flutter widget that lays out its children in tight rows.
 - CircleCI config
 
 [Unreleased]: https://bitbucket.org/mongoose13/fling-gallery/commits/
-[1.0.2]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/1.0.2
-[1.0.1]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/1.0.1
-[1.0.0]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/1.0.0
-[0.2.0]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/0.2.0
-[0.1.0]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/0.1.0
-[0.0.1]: https://bitbucket.org/mongoose13/fling-gallery/commits/tag/0.0.1
+[1.0.3]: https://github.com/mongoose13/fling-gallery/tree/v1.0.3
+[1.0.2]: https://github.com/mongoose13/fling-gallery/tree/v1.0.2
+[1.0.1]: https://github.com/mongoose13/fling-gallery/tree/v1.0.1
+[1.0.0]: https://github.com/mongoose13/fling-gallery/tree/v1.0.0
+[0.2.0]: https://github.com/mongoose13/fling-gallery/tree/v0.2.0
+[0.1.0]: https://github.com/mongoose13/fling-gallery/tree/v0.1.0
+[0.0.1]: https://github.com/mongoose13/fling-gallery/tree/v0.0.1
