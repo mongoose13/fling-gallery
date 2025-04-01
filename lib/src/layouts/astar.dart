@@ -81,6 +81,7 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
       var currentRowWidth = 0.0;
       var currentRowPadding = 0.0;
       var ratio = maxRatio;
+      var oldRatio = double.infinity;
       final slots = <GallerySlot>[];
       while (currentChild != null && ratio >= minRatio) {
         // calculate effects of one more child in this row
@@ -88,6 +89,8 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
             currentChild.getDryLayout(preferredConstraints).width;
         if (slots.isNotEmpty) {
           currentRowPadding += horizontalSpacing;
+        } else {
+          oldRatio = constraints.maxWidth / currentChildPreferredWidth;
         }
         remainingWidth -= currentChildPreferredWidth;
         currentRowWidth += currentChildPreferredWidth;
@@ -100,6 +103,8 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
         }
 
         // determine of the row is complete
+        final isUnsolvable = ratio < minRatio && oldRatio > maxRatio ||
+            (slots.length == 1 && ratio < minRatio);
         if (ratio <= maxRatio && ratio >= minRatio) {
           // this row is within bounds: accept it
           options.add(
@@ -116,23 +121,29 @@ class AStarGalleryLayout extends GalleryLayoutStrategy {
                       (remainingWidth % constraints.maxWidth),
             ),
           );
-        } else if (currentChild == null ||
-            (slots.length == 1 && ratio < minRatio)) {
+        } else if (currentChild == null || isUnsolvable) {
           // we must accept this row:
-          // it either has only one item, or there are no more children
+          // it either has no solution, or there are no more children
           options.add(
             _AStarOption(
               layout: this,
               constraints: constraints,
               rows: option.rows.followedBy([
-                (slots: slots, ratio: forceFill ? ratio : maxRatio)
+                (
+                  slots: slots,
+                  ratio:
+                      forceFill ? (isUnsolvable ? oldRatio : ratio) : maxRatio
+                )
               ]).toList(growable: false),
               currentChild: currentChild,
-              remainingWidth: remainingWidth,
-              score: constraints.maxWidth - currentRowWidth,
+              remainingWidth:
+                  remainingWidth, // TODO: if unsolvable, use old remainingWidth
+              score: constraints.maxWidth -
+                  currentRowWidth, // TODO: if unsolvable, use old currentRowWidth
             ),
           );
         }
+        oldRatio = ratio;
       }
     }
 

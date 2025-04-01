@@ -4,7 +4,9 @@ A Flutter widget that lays out its children in tight rows.
 
 ## [Unreleased]
 
-None (yet).
+### Fixed
+
+- Use correct scaling for single items in rows where there is no solution (AStar)
 
 ## [1.0.3]
 

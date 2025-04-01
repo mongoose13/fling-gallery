@@ -474,6 +474,58 @@ void main() {
             // then
             expect(tester.getSize(find.byType(Gallery)), Size(80.0, 80.0));
           });
+          testWidgets("force fills single item rows",
+              (WidgetTester tester) async {
+            // given
+            final childKeys = List.generate(2, (_) => GlobalKey());
+            final widget = buildConstrainedBox(
+              BoxConstraints(
+                minWidth: 0.0,
+                maxWidth: 150.0,
+                minHeight: 0.0,
+                maxHeight: double.infinity,
+              ),
+              Gallery(
+                layoutStrategy: AStarGalleryLayout(
+                  preferredRowHeight: 100.0,
+                  minRatio: 0.8,
+                  maxRatio: 1.2,
+                  horizontalSpacing: 0.0,
+                  verticalSpacing: 0.0,
+                ),
+                children: childKeys
+                    .map(
+                      (key) => AspectRatio(
+                        aspectRatio: 1.0,
+                        key: key,
+                      ),
+                    )
+                    .toList(growable: false),
+              ),
+            );
+
+            // when
+            await tester.pumpWidget(widget);
+
+            // then
+            expect(tester.getSize(find.byType(Gallery)), Size(150.0, 300.0));
+            expect(
+              tester.getTopLeft(find.byKey(childKeys[0])),
+              Offset(0.0, 0.0),
+            );
+            expect(
+              tester.getTopRight(find.byKey(childKeys[0])),
+              Offset(150.0, 0.0),
+            );
+            expect(
+              tester.getTopLeft(find.byKey(childKeys[1])),
+              Offset(0.0, 150.0),
+            );
+            expect(
+              tester.getTopRight(find.byKey(childKeys[1])),
+              Offset(150.0, 150.0),
+            );
+          });
         });
 
         group("multiple children in two rows", () {
