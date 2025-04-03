@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
         title: 'Fling Gallery Demo',
         home: Scaffold(
           appBar: AppBar(
-            title: Text("Fling Gallery Demo - 1.0.2"),
+            title: Text("Fling Gallery Demo - v1.0.4"),
             bottom: TabBar(
               tabs: <Widget>[
                 Padding(
